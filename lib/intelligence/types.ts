@@ -49,7 +49,7 @@ export interface CompareResponse {
 }
 
 export type WhatIfChange = {
-  type: "BRIDGE_FAILURE" | "RAIN_INTENSITY_CHANGE" | "SHELTER_CLOSURE" | "RESOURCE_UNAVAILABLE";
+  type: "BRIDGE_FAILURE" | "RAIN_INTENSITY_CHANGE" | "SHELTER_CLOSURE" | "RESOURCE_UNAVAILABLE" | "ROAD_BLOCKAGE" | "HOSPITAL_DEGRADATION" | "POP_INCREASE";
   target_id?: string;
   value_percent?: number;
 };

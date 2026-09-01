@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 import {
   AfterActionMetrics,
   CitizenInstruction,
@@ -43,6 +44,8 @@ export interface ScenarioStore {
   bridgeFailed: boolean;
   replans: number;
   afterAction: AfterActionMetrics;
+  role: string;
+  setRole: (role: string) => void;
 
   startSimulation: () => void;
   acknowledgeTaskById: (id: string) => void;
@@ -101,7 +104,7 @@ function recomputeMetrics(actions: RecommendedAction[], tasks: Task[], replans: 
   return computeAfterActionMetrics(actions, tasks, replans);
 }
 
-export const useScenarioStore = create<ScenarioStore>((set, get) => ({
+export const useScenarioStore = create<ScenarioStore>()(persist((set, get) => ({
   phase: "idle",
   clockSeconds: 0,
   villages: INITIAL_VILLAGES,
@@ -115,6 +118,8 @@ export const useScenarioStore = create<ScenarioStore>((set, get) => ({
   bridgeFailed: false,
   replans: 0,
   afterAction: computeAfterActionMetrics([], [], 0),
+  role: "Incident Commander",
+  setRole: (role: string) => set({ role }),
 
   startSimulation: () => {
     const clockSeconds = 0;
@@ -339,4 +344,9 @@ export const useScenarioStore = create<ScenarioStore>((set, get) => ({
       replans: 0,
       afterAction: computeAfterActionMetrics([], [], 0),
     }),
+}), {
+  name: 'sankat-setu-session',
+  storage: createJSONStorage(() => sessionStorage),
+  version: 1,
 }));
+

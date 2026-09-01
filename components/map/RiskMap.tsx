@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, MouseEvent, WheelEvent, PointerEvent as ReactPointerEvent } from "react";
-import { ZoomIn, ZoomOut, Maximize, Layers } from "lucide-react";
+import { ZoomIn, ZoomOut, Filter, RotateCcw, Maximize, Layers } from "lucide-react";
 import { BRIDGE, HOSPITAL, RESCUE_TEAMS } from "@/lib/scenario/data";
 import { useScenarioStore } from "@/lib/scenario/store";
 import { Severity } from "@/lib/scenario/types";
@@ -24,6 +24,12 @@ export function RiskMap() {
   const [isDragging, setIsDragging] = useState(false);
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+  
+  // Phase 2 Map Controls
+  const [layers, setLayers] = useState({ villages: true, routes: true, shelters: true, teams: true });
+  const [criticalOnly, setCriticalOnly] = useState(false);
+  const [routeStatus, setRouteStatus] = useState("all"); // "all" | "blocked" | "open"
+  const [shelterCapacity, setShelterCapacity] = useState("all"); // "all" | "available"
 
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -98,6 +104,40 @@ export function RiskMap() {
         <span className="flex items-center gap-1"><Layers size={12} /> Layer 04 / response</span>
       </div>
 
+      
+      <div className="absolute right-4 top-4 z-20 flex flex-col gap-2">
+        <div className="group relative">
+          <button className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0d1725]/90 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors shadow-lg backdrop-blur">
+            <Filter size={14} />
+          </button>
+          <div className="absolute right-0 top-10 hidden w-48 flex-col gap-3 rounded-xl border border-white/10 bg-[#0d1725]/95 p-3 shadow-2xl backdrop-blur-md group-hover:flex">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Map Layers</div>
+            <label className="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" checked={layers.villages} onChange={e => setLayers({...layers, villages: e.target.checked})} /> Settlements</label>
+            <label className="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" checked={layers.routes} onChange={e => setLayers({...layers, routes: e.target.checked})} /> Evacuation Routes</label>
+            <label className="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" checked={layers.shelters} onChange={e => setLayers({...layers, shelters: e.target.checked})} /> Shelters</label>
+            <label className="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" checked={layers.teams} onChange={e => setLayers({...layers, teams: e.target.checked})} /> Rescue Teams</label>
+            
+            <div className="mt-2 border-t border-white/10 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">Asset Filters</div>
+            <label className="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" checked={criticalOnly} onChange={e => setCriticalOnly(e.target.checked)} /> Critical Settlements Only</label>
+            <select value={routeStatus} onChange={e => setRouteStatus(e.target.value)} className="w-full rounded bg-slate-800 p-1 text-xs text-slate-300 border border-slate-700">
+              <option value="all">All Routes</option>
+              <option value="open">Open Routes</option>
+              <option value="blocked">Blocked Routes</option>
+            </select>
+            <select value={shelterCapacity} onChange={e => setShelterCapacity(e.target.value)} className="w-full rounded bg-slate-800 p-1 text-xs text-slate-300 border border-slate-700">
+              <option value="all">All Shelters</option>
+              <option value="available">Capacity Available</option>
+            </select>
+          </div>
+        </div>
+        <button onClick={() => setTransform({ x: 0, y: 0, scale: 1 })} className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0d1725]/90 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors shadow-lg backdrop-blur" title="Reset View">
+          <RotateCcw size={14} />
+        </button>
+        <button onClick={() => setTransform({ x: 0, y: 0, scale: 1.2 })} className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0d1725]/90 border border-white/10 text-slate-300 hover:text-white hover:bg-slate-800 transition-colors shadow-lg backdrop-blur" title="Fit to incident">
+          <Maximize size={14} />
+        </button>
+      </div>
+
       <AssetInspector selectedAsset={selectedAsset} onClose={() => setSelectedAsset(null)} />
 
       <svg
@@ -146,7 +186,10 @@ export function RiskMap() {
             aria-hidden="true"
           />
 
-          {edges.map((edge) => (
+          {edges
+    .filter(() => layers.routes)
+    .filter(e => routeStatus === "all" || e.status === routeStatus)
+    .map((edge) => (
             <g key={edge.id} role="img" aria-label={`Route ${edge.label}, status: ${edge.status}`}>
               <path d={edge.path} fill="none" stroke="#020617" strokeWidth={edge.status === "blocked" ? 7 : 6} opacity="0.72" />
               <path
@@ -201,7 +244,10 @@ export function RiskMap() {
           </g>
 
           {/* Shelters */}
-          {shelters.map((shelter) => {
+          {shelters
+    .filter(() => layers.shelters)
+    .filter(s => shelterCapacity === "all" || s.occupied < s.capacity)
+    .map((shelter) => {
             const load = Math.min(100, Math.round((shelter.occupied / shelter.capacity) * 100));
             return (
               <g
@@ -229,7 +275,9 @@ export function RiskMap() {
           })}
 
           {/* Rescue Teams */}
-          {RESCUE_TEAMS.map((team) => (
+          {RESCUE_TEAMS
+    .filter(() => layers.teams)
+    .map((team) => (
             <g 
               key={team.id} 
               transform={`translate(${team.x} ${team.y})`} 
@@ -245,7 +293,10 @@ export function RiskMap() {
           ))}
 
           {/* Villages */}
-          {villages.map((village) => (
+          {villages
+    .filter(() => layers.villages)
+    .filter(v => !criticalOnly || v.status === "critical")
+    .map((village) => (
             <g
               key={village.id}
               transform={`translate(${village.x} ${village.y})`}

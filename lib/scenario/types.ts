@@ -50,7 +50,7 @@ export type Department =
   | "Transport"
   | "Electricity";
 
-export type TaskStatus = "pending" | "acknowledged" | "completed" | "escalated";
+export type TaskStatus = "draft" | "dispatched" | "pending" | "acknowledged" | "in_progress" | "blocked" | "escalated" | "completed" | "cancelled" | "superseded";
 
 export interface Task {
   id: string;
@@ -90,6 +90,11 @@ export interface TimelineEvent {
   label: string;
   detail: string;
   kind: "info" | "warning" | "critical" | "success";
+  eventType?: "scenario" | "alert" | "analysis" | "recommendation" | "confirmation" | "task" | "citizen" | "infrastructure" | "replan" | "escalation" | "verification" | "report";
+  relatedEntityIds?: string[];
+  source?: string;
+  actorRole?: string;
+  simulatedStatus?: string;
 }
 
 export interface CitizenInstruction {

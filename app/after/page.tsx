@@ -14,12 +14,51 @@ import { AfterActionCharts } from "@/components/after/AfterActionCharts";
 import { useToast } from "@/components/ui/Toast";
 
 export default function AfterActionPage() {
+    if (typeof window !== "undefined") {
+      const style = document.createElement("style");
+      style.innerHTML = `@media print { nav, button { display: none !important; } body { background: white; color: black; } }`;
+      document.head.appendChild(style);
+    }
+  
   const afterAction = useScenarioStore((state) => state.afterAction);
   const events = useScenarioStore((state) => state.events);
   const tasks = useScenarioStore((state) => state.tasks);
   const bridgeFailed = useScenarioStore((state) => state.bridgeFailed);
   const escalated = tasks.filter((t) => t.status === "escalated").length;
   const { toast } = useToast();
+
+  
+  const sanitizeCSV = (val: any) => {
+    const str = String(val);
+    if (/^[=+-@]/.test(str)) return "'" + str;
+    return str;
+  };
+  
+  const handleCSVDownload = () => {
+    try {
+      const headers = "ID,Title,Department,Status,Priority,CreatedAt,SLA\n";
+      const rows = tasks.map(t => 
+        [t.id, t.title, t.department, t.status, t.priority, t.createdAtSec, t.slaSeconds]
+        .map(sanitizeCSV)
+        .join(",")
+      ).join("\n");
+      
+      const blob = new Blob([headers + rows], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "sankat-setu-tasks.csv";
+      anchor.click();
+      URL.revokeObjectURL(url);
+      toast("CSV report downloaded", "success");
+    } catch {
+      toast("Failed to generate CSV", "critical");
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
 
   const handleDownload = () => {
     try {
@@ -51,9 +90,13 @@ export default function AfterActionPage() {
         title="After-Action Intelligence"
         description="Compare recommendations with acknowledgement and execution, expose delays, and turn the exercise into plan improvements."
         actions={
-          <Button variant="secondary" onClick={handleDownload} disabled={tasks.length === 0}>
-            <Download size={14} aria-hidden="true" /> Export report
+          <div className="flex gap-2">
+    <Button variant="secondary" onClick={handlePrint} disabled={tasks.length === 0}>Print</Button>
+    <Button variant="secondary" onClick={handleCSVDownload} disabled={tasks.length === 0}>CSV</Button>
+    <Button variant="secondary" onClick={handleDownload} disabled={tasks.length === 0}>
+            JSON
           </Button>
+    </div>
         }
       />
 

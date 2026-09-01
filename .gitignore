@@ -1,4 +1,4 @@
--e node_modules/
+node_modules/
 .next/
 .turbo/
 coverage/
@@ -8,8 +8,15 @@ playwright-report/
 venv/
 __pycache__/
 .pytest_cache/
-.env.local
+.env*
+!*.example
 *.zip
 .DS_Store
 build/
 dist/
+logs/
+screenshots/
+*browser_binaries*
+.idea/
+.vscode/
+*secrets*

@@ -14,14 +14,38 @@ const FEATURES = [
   { icon: Accessibility, title: "Assistance loop", description: "A support request creates a P1 task for the command team." },
 ];
 
+import React from 'react';
+
 export default function CitizenPage() {
   const instruction = useScenarioStore((state) => state.citizenInstruction);
   const responses = useScenarioStore((state) => state.citizenResponses);
   const tasks = useScenarioStore((state) => state.tasks);
+  
+  const [lang, setLang] = React.useState("en");
+  const [channel, setChannel] = React.useState("mobile");
+
   const assistanceTask = tasks.find((task) => task.reasonCode === "CITIZEN_ASSISTANCE_REQUEST");
 
   return (
     <div>
+      
+      <div className="flex gap-2">
+        <select value={lang} onChange={e => setLang(e.target.value)} className="bg-slate-800 text-white p-2 rounded">
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+        </select>
+        <select value={channel} onChange={e => setChannel(e.target.value)} className="bg-slate-800 text-white p-2 rounded">
+          <option value="mobile">Mobile App</option>
+          <option value="sms">SMS</option>
+          <option value="whatsapp">WhatsApp</option>
+          <option value="ivrs">IVRS Script</option>
+        </select>
+        <select className="bg-slate-800 text-white p-2 rounded" title="Demo location selector">
+          <option>Demo Location: Current Village</option>
+          <option>Demo Location: Village Alpha</option>
+        </select>
+      </div>
+
       <PageHeader
         eyebrow="Last-mile safety"
         title="Personalized Citizen Alert"
@@ -31,7 +55,14 @@ export default function CitizenPage() {
 
       <section className="mt-6 grid items-start gap-5 xl:grid-cols-[420px_minmax(0,1fr)]">
         <Card className="overflow-hidden bg-gradient-to-b from-cyan-500/[0.055] to-[#0a1422] p-4 sm:p-6">
-          <CitizenPhone />
+          {channel === "mobile" && <CitizenPhone />}
+   {channel !== "mobile" && (
+     <div className="text-white p-4 border border-white/20 rounded">
+       Previewing {channel} in {lang === "en" ? "English" : "Hindi"}
+       <br/><br/>
+       {lang === "en" ? "Evacuate immediately." : "कृपया तुरंत सुरक्षित स्थान पर जाएँ।"}
+     </div>
+   )}
           <div className="mt-5 flex items-center justify-center gap-2 text-[10px] font-semibold text-slate-600"><Smartphone size={12} /> Citizen mobile preview · multilingual channel-ready</div>
         </Card>
 

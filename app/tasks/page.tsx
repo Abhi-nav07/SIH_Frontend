@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/Button";
 import { Progress } from "@/components/ui/Progress";
 import { useToast } from "@/components/ui/Toast";
 
+import React from 'react';
+
 export default function ActionBoardPage() {
   const phase = useScenarioStore((state) => state.phase);
   const tasks = useScenarioStore((state) => state.tasks);
@@ -22,6 +24,18 @@ export default function ActionBoardPage() {
   const { toast } = useToast();
 
   const rate = completionRate(tasks);
+  
+  const role = useScenarioStore((state) => state.role);
+  const setRole = useScenarioStore((state) => state.setRole);
+  const [departmentFilter, setDepartmentFilter] = React.useState("All");
+  
+  const filteredTasks = tasks.filter(t => {
+    if (role === "Department Officer") {
+      return departmentFilter === "All" || t.department === departmentFilter;
+    }
+    return true; // Incident commander and Observer see all
+  });
+
   const pending = tasks.filter((t) => t.status === "pending").length;
   const acknowledged = tasks.filter((t) => t.status === "acknowledged").length;
   const escalated = tasks.filter((t) => t.status === "escalated").length;
@@ -62,6 +76,25 @@ export default function ActionBoardPage() {
           )
         }
       />
+
+      
+      <div className="mb-4 flex gap-2">
+        <select value={role} onChange={e => setRole(e.target.value)} className="bg-slate-800 text-white p-2 rounded text-sm font-semibold">
+          <option value="Incident Commander">Role: Incident Commander</option>
+          <option value="Department Officer">Role: Department Officer</option>
+          <option value="Observer / Jury View">Role: Observer / Jury View (Read-Only)</option>
+        </select>
+        {role === "Department Officer" && (
+          <select value={departmentFilter} onChange={e => setDepartmentFilter(e.target.value)} className="bg-slate-800 text-white p-2 rounded text-sm">
+            <option value="All">All Departments</option>
+            <option value="Police">Police</option>
+            <option value="PWD">PWD</option>
+            <option value="Transport">Transport</option>
+            <option value="Health">Health</option>
+            <option value="SDRF">SDRF</option>
+          </select>
+        )}
+      </div>
 
       <section className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4" aria-label="Task summary">
         <StatCard label="Pending" value={pending} hint="awaiting acknowledgement" tone="warning" />

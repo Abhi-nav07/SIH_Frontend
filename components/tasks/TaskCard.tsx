@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils";
 import type { Tone } from "@/components/ui/Badge";
 
 const STATUS_TONE: Record<TaskStatus, Tone> = {
+    draft: "neutral", dispatched: "neutral", in_progress: "info",
+    blocked: "critical", cancelled: "neutral", superseded: "neutral",
   pending: "neutral",
   acknowledged: "info",
   completed: "success",

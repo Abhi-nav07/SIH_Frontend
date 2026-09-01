@@ -17,27 +17,37 @@ const FILTERS: { label: string; value: "all" | TaskStatus }[] = [
 
 export function TaskBoard() {
   const tasks = useScenarioStore((state) => state.tasks);
+  const role = useScenarioStore((state) => state.role);
+  const isReadOnly = role === "Observer / Jury View";
   const [filter, setFilter] = useState<"all" | TaskStatus>("all");
   const [query, setQuery] = useState("");
 
+    const [deptFilter, setDeptFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  
   const visibleTasks = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return tasks
       .filter((task) => filter === "all" || task.status === filter)
+      .filter((task) => deptFilter === "all" || task.department === deptFilter)
+      .filter((task) => priorityFilter === "all" || task.priority === priorityFilter)
       .filter(
         (task) =>
           !normalized ||
           `${task.title} ${task.department} ${task.reasonCode}`.toLowerCase().includes(normalized),
       )
       .sort((a, b) => {
-        const statusWeight: Record<TaskStatus, number> = { escalated: 0, pending: 1, acknowledged: 2, completed: 3 };
+        const statusWeight: Record<TaskStatus, number> = { 
+          escalated: 0, pending: 1, acknowledged: 2, in_progress: 3, 
+          blocked: 4, dispatched: 5, draft: 6, completed: 7, cancelled: 8, superseded: 9 
+        };
         return (
           statusWeight[a.status] - statusWeight[b.status] ||
           a.priority.localeCompare(b.priority) ||
           a.createdAtSec - b.createdAtSec
         );
       });
-  }, [filter, query, tasks]);
+  }, [filter, query, tasks, deptFilter, priorityFilter]);
 
   if (tasks.length === 0) {
     return (

@@ -43,6 +43,7 @@ export default function CommandCenterPage() {
     toast("Exercise started — risk scored, tasks dispatched", "success");
   };
 
+  const bridgeFailed = useScenarioStore((state) => state.bridgeFailed);
   const handleReset = () => {
     resetScenario();
     setShowResetDialog(false);
@@ -69,10 +70,10 @@ export default function CommandCenterPage() {
 
       {/* Situation summary metrics */}
       <section aria-label="Situation summary" className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-        <StatCard label="Population at risk" value={populationRisk.toLocaleString("en-IN")} hint="current exposure estimate" tone="warning" />
+        <StatCard label="Population at risk" value={populationRisk.toLocaleString("en-IN")} hint="current exposure estimate" tone="warning" trendValue={bridgeFailed ? "450" : undefined} trendDirection={bridgeFailed ? "up" : "none"} trendReason={bridgeFailed ? "Bridge-3 failure" : undefined} />
         <StatCard label="Critical zones" value={criticalZones} hint="highest-priority settlements" tone="critical" />
-        <StatCard label="Routes blocked" value={roadsBlocked} hint={`${open} of ${total} roads operational`} tone={roadsBlocked ? "critical" : "success"} />
-        <StatCard label="Open actions" value={openActions} hint="across seven departments" tone="info" />
+        <StatCard label="Routes blocked" value={roadsBlocked} hint={`${open} of ${total} roads operational`} tone={roadsBlocked ? "critical" : "success"} trendValue={bridgeFailed ? "2" : undefined} trendDirection={bridgeFailed ? "up" : "none"} trendReason={bridgeFailed ? "infrastructure cascade" : undefined} />
+        <StatCard label="Open actions" value={openActions} hint="across seven departments" tone="info" trendValue={bridgeFailed ? "12" : undefined} trendDirection={bridgeFailed ? "up" : "none"} trendReason={bridgeFailed ? "replan generation" : undefined} />
         <StatCard label="Assistance requests" value={assistRequests} hint="citizen support queue" tone={assistRequests ? "critical" : "neutral"} className="col-span-2 md:col-span-1" />
       </section>
 

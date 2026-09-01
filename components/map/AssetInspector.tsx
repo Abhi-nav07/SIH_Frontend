@@ -1,5 +1,4 @@
 "use client";
-
 import { X } from "lucide-react";
 import { useScenarioStore } from "@/lib/scenario/store";
 import { Button } from "@/components/ui/Button";
@@ -31,8 +30,14 @@ export function AssetInspector({ selectedAsset, onClose }: AssetInspectorProps) 
           </div>
           <div className="text-slate-500">Dependency</div>
           <div className="text-slate-300">Primary Evacuation Route</div>
-          <div className="text-slate-500">Provenance</div>
-          <div>
+          <div className="text-slate-500">Last verification</div>
+          <div className="text-slate-300">T-12m (Visual)</div>
+          <div className="text-slate-500">Affected</div>
+          <div className="text-slate-300">2 Settlements (Chamba, Koti)</div>
+          <div className="text-slate-500">Consequence</div>
+          <div className="text-slate-300 truncate" title={bridgeFailed ? "Route severed, +45m detour" : "Critical chokepoint"}>{bridgeFailed ? "Route severed, +45m detour" : "Critical chokepoint"}</div>
+          <div className="text-slate-500 mt-2 col-span-2 border-t border-white/10 pt-2">Provenance</div>
+          <div className="col-span-2">
             <ProvenanceTag 
               source="Structural Sensor + Field Report" 
               sourceType="sensor"
@@ -66,6 +71,12 @@ export function AssetInspector({ selectedAsset, onClose }: AssetInspectorProps) 
           <div className="text-slate-300">SDRF Swift Water</div>
           <div className="text-slate-500">Availability</div>
           <div className="font-bold text-emerald-400">STANDBY</div>
+          <div className="text-slate-500">Assignment</div>
+          <div className="text-slate-300">Unassigned</div>
+          <div className="text-slate-500">ETA</div>
+          <div className="text-slate-300">--</div>
+          <div className="text-slate-500">Data Freshness</div>
+          <div className="text-slate-300">current (GPS live)</div>
         </div>
       </div>
     );
@@ -86,6 +97,10 @@ export function AssetInspector({ selectedAsset, onClose }: AssetInspectorProps) 
             <div className={`font-bold ${shelter.status === "full" ? "text-orange-400" : "text-emerald-400"}`}>
               {shelter.status.toUpperCase()}
             </div>
+            <div className="text-slate-500">Reachability</div>
+            <div className="font-bold text-emerald-400">ACCESSIBLE</div>
+            <div className="text-slate-500">Last verification</div>
+            <div className="text-slate-300">T-30m (Staff check-in)</div>
           </div>
         </div>
       );
@@ -106,7 +121,9 @@ export function AssetInspector({ selectedAsset, onClose }: AssetInspectorProps) 
             <div className="font-mono text-slate-300">{Math.round(village.riskScore * 100)} / 100</div>
             <div className="text-slate-500">Hazard Severity</div>
             <div className="font-mono text-slate-300">{Math.round(village.hazardSeverity * 100)}%</div>
-            <div className="text-slate-500">Status</div>
+            <div className="text-slate-500">Assigned Shelter</div>
+            <div className="font-medium text-cyan-400">{village.assignedShelterId ? shelters.find(s => s.id === village.assignedShelterId)?.name || village.assignedShelterId : "Pending"}</div>
+            <div className="text-slate-500">Evacuation State</div>
             <div className="font-bold text-orange-400">{village.status.toUpperCase()}</div>
           </div>
         </div>
