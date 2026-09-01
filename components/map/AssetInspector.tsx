@@ -2,7 +2,6 @@
 
 import { X } from "lucide-react";
 import { useScenarioStore } from "@/lib/scenario/store";
-import { BRIDGE, HOSPITAL, RESCUE_TEAMS } from "@/lib/scenario/data";
 import { Button } from "@/components/ui/Button";
 import { ProvenanceTag } from "@/components/ui/ProvenanceTag";
 
@@ -37,7 +36,7 @@ export function AssetInspector({ selectedAsset, onClose }: AssetInspectorProps) 
             <ProvenanceTag 
               source="Structural Sensor + Field Report" 
               sourceType="sensor"
-              observedAt={`T-${Math.floor(Math.random() * 10) + 2}m`} 
+              observedAt="T-4m" 
               confidence={85} 
               freshness="current" 
               isSimulated={true} 

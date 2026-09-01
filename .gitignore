@@ -1,3 +1,15 @@
-﻿node_modules/
+-e node_modules/
 .next/
-.env
+.turbo/
+coverage/
+test-results/
+playwright-report/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.env.local
+*.zip
+.DS_Store
+build/
+dist/

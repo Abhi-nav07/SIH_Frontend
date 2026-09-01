@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useScenarioStore } from '@/lib/scenario/store';
 
 describe('Incident State Model (store.ts)', () => {

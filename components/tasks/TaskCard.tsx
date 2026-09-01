@@ -23,7 +23,6 @@ export function TaskCard({ task }: { task: Task }) {
   const completeTaskById = useScenarioStore((state) => state.completeTaskById);
   const elapsed = Math.max(0, clockSeconds - task.createdAtSec);
   const remaining = Math.max(0, task.slaSeconds - elapsed);
-  const progress = Math.min(100, Math.round((elapsed / task.slaSeconds) * 100));
 
   return (
     <article

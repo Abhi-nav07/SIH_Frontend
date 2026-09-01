@@ -25,10 +25,6 @@ import { HumanConfirmation } from "@/components/command/HumanConfirmation";
 
 export default function CommandCenterPage() {
   const phase = useScenarioStore((state) => state.phase);
-  const villages = useScenarioStore((state) => state.villages);
-  const edges = useScenarioStore((state) => state.edges);
-  const tasks = useScenarioStore((state) => state.tasks);
-  const responses = useScenarioStore((state) => state.citizenResponses);
   const startSimulation = useScenarioStore((state) => state.startSimulation);
   const resetScenario = useScenarioStore((state) => state.resetScenario);
   const { toast } = useToast();

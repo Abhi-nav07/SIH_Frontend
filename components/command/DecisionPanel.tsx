@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ArrowUpRight, Bot, CheckCircle2, GitBranch, ShieldCheck, Sparkles, TriangleAlert } from "lucide-react";
+import { ArrowUpRight, Bot, CheckCircle2, GitBranch, Sparkles, TriangleAlert } from "lucide-react";
 import { useScenarioStore } from "@/lib/scenario/store";
 import { Card, CardBody, CardHeader } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
@@ -85,7 +85,7 @@ export function DecisionPanel() {
                 <div className="rounded-xl border border-orange-500/20 bg-orange-500/[0.08] p-3">
                   <div className="text-[10px] font-bold uppercase tracking-wider text-orange-400">Plan Changed</div>
                   <div className="mt-1.5 text-xs font-medium text-orange-200">
-                    Previous action "{supersededActions[0].title}" was superseded due to Bridge-3 failure. New tasks generated.
+                    Previous action &ldquo;{supersededActions[0].title}&rdquo; was superseded due to Bridge-3 failure. New tasks generated.
                   </div>
                 </div>
               )}

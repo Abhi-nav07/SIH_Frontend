@@ -1,0 +1,6 @@
+{
+  "name": "SANKAT SETU — Disaster Operations",
+  "description": "An explainable alert-to-action disaster orchestration prototype for inter-agency response.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
