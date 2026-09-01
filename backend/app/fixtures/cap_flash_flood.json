@@ -1,0 +1,26 @@
+{
+  "identifier": "CWC-UK-2026-0044",
+  "sender": "cwc.gov.in",
+  "sent": "2026-08-30T04:15:00+05:30",
+  "status": "Actual",
+  "msgType": "Alert",
+  "info": [
+    {
+      "event": "Flash Flood Warning",
+      "headline": "Flash flood risk rising along river corridor near Village Alpha",
+      "description": "CWC-style flash flood warning fixture. River level rising rapidly; flash flood possible within hours near settlements bordering the corridor.",
+      "severity": "Severe",
+      "certainty": "Observed",
+      "effective": "2026-08-30T04:15:00+05:30",
+      "expires": "2026-08-30T16:15:00+05:30",
+      "instruction": "Evacuate low-lying areas near the river corridor immediately.",
+      "web": "https://cwc.gov.in/",
+      "area": [
+        {
+          "areaDesc": "River corridor near Village Alpha and Village Beta",
+          "polygon": "30.02,78.32 30.06,78.40 29.97,78.44 29.94,78.34"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "identifier": "GSI-UK-2026-0017",
+  "sender": "gsi.gov.in",
+  "sent": "2026-08-30T06:30:00+05:30",
+  "status": "Actual",
+  "msgType": "Alert",
+  "info": [
+    {
+      "event": "Landslide Advisory",
+      "headline": "Landslide susceptibility elevated on hill roads following sustained rainfall",
+      "description": "GSI-style landslide advisory fixture. Slope saturation elevated after 48 hours of continuous rainfall; hill roads at moderate-to-high risk.",
+      "severity": "Moderate",
+      "certainty": "Possible",
+      "effective": "2026-08-30T06:30:00+05:30",
+      "expires": "2026-09-01T06:30:00+05:30",
+      "instruction": "Avoid unnecessary travel on hill roads. Report visible slope cracking.",
+      "web": "https://www.gsi.gov.in/",
+      "area": [
+        {
+          "areaDesc": "Hill roads above Village Gamma and Village Delta",
+          "polygon": "30.08,78.50 30.12,78.58 30.03,78.62 29.99,78.53"
+        }
+      ]
+    }
+  ]
+}
